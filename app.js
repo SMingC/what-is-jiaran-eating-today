@@ -34,7 +34,7 @@ const transporter = nodemailer.createTransport({
   service: "qq",
   auth: {
     user: "347552878@qq.com",
-    pass: process.env.AUTHENTICATION,
+    pass: "hkhexabdtstabjfj",
   },
 });
 
