@@ -68,24 +68,41 @@ const randomMale = (arr) => {
 
 /* 此代码使用“cron”库安排任务在每天上午 11:20 和下午 5:20 运行。当任务运行时，它使用 randomMale 函数从一组具有不同权重/概率的项目中随机选择一个食物项目。然后，它使用
 `nodemailer` 库向指定的收件人发送一封电子邮件，其中包含所选的食物作为邮件正文。电子邮件是使用使用电子邮件服务提供商和身份验证信息创建的“传输器”对象发送的。 */
-cron.schedule("20 11,17 * * *", () => {
-  const food = randomMale(items);
+// cron.schedule("20 11,17 * * *", () => {
+//   const food = randomMale(items);
 
-  const mailOptions = {
-    from: "347552878@qq.com",
-    to: ["2063808831@qq.com", "1115499597@qq.com"],
-    subject: "嘉然今天吃喝什么？",
-    text: `今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~比如香喷喷的${food}！`,
-  };
+//   const mailOptions = {
+//     from: "347552878@qq.com",
+//     to: ["2063808831@qq.com", "1115499597@qq.com"],
+//     subject: "嘉然今天吃什么？",
+//     text: `今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~比如香喷喷的${food}！`,
+//   };
 
-  // 在这里编写发送邮件的代码
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log(error);
-    } else {
-      console.log("Email sent: " + info.response);
-    }
-  });
+//   // 在这里编写发送邮件的代码
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.log(error);
+//     } else {
+//       console.log("Email sent: " + info.response);
+//     }
+//   });
+// });
+
+const food = randomMale(items);
+
+const mailOptions = {
+  from: "347552878@qq.com",
+  to: ["2063808831@qq.com", "1115499597@qq.com"],
+  subject: "嘉然今天吃什么？",
+  text: `今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~比如香喷喷的${food}！`,
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    console.log(error);
+  } else {
+    console.log("Email sent: " + info.response);
+  }
 });
 
 module.exports = app;
