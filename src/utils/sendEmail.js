@@ -1,6 +1,18 @@
+/*
+ * @Author       : Seaming
+ * @Date         : 2023-05-08
+ * @LastEditors  : Seaming
+ * @LastEditTime : 2023-05-08
+ * @FilePath     : /嘉然今天吃什么/src/utils/sendEmail.js
+ * @Description  : async way to  get image and send it to the current emails
+ *
+ * Copyright (c) 2023 by Seaming, All Rights Reserved.
+ */
+
 import { schedule } from "node-cron";
 import { createTransport } from "nodemailer";
 import { canteens, TakeAways } from "../data/food.js";
+import { getImageStream } from "./asyncImage.js";
 import randomMale from "./randomMale.js";
 
 const transporter = createTransport({
@@ -11,10 +23,9 @@ const transporter = createTransport({
   },
 });
 
-/* 此代码使用“cron”库安排任务在每天上午 11:20 和下午 5:20 运行。当任务运行时，它使用 randomMale 函数从一组具有不同权重/概率的项目中随机选择一个食物项目。然后，它使用
-`nodemailer` 库向指定的收件人发送一封电子邮件，其中包含所选的食物作为邮件正文。电子邮件是使用使用电子邮件服务提供商和身份验证信息创建的“传输器”对象发送的。 */
-const sendEmail = () => {
-  schedule("20 11,17 * * *", () => {
+const sendEmail = () =>
+  schedule("20 11,17 * * *", async () => {
+    console.log("邮件发送中...");
     const canteensFood = randomMale(canteens);
     const takeAwaysFood = randomMale(TakeAways);
 
@@ -22,7 +33,14 @@ const sendEmail = () => {
       from: "347552878@qq.com",
       to: ["2063808831@qq.com", "1115499597@qq.com"],
       subject: "嘉然今天吃什么？",
-      text: `今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~比如香喷喷的${canteensFood}！,如果非要点外卖的话,那就${takeAwaysFood}吧！`,
+      html: `<div style="background:linear-gradient(180deg,#730040 0,#301cbe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-fill-color:transparent;font-family:'Smiley Sans';font-style:normal;font-weight:700;font-size:24px;line-height:43px">今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~</div><div style="box-sizing:border-box;"><div style=box-sizing:border-box;display:grid;grid-template-rows:repeat(3,auto);margin-top:20px;justify-items:center;justify-content:center;align-items:center><div>比如香喷喷的${canteensFood}！</div><div>如果非要点外卖的话,那就${takeAwaysFood}吧！</div></div></div><img src="https://t.lizi.moe/mp" alt=ss style="max-width:100%;height:60%;width:60%;overflow-clip-margin:content-box;overflow:clip;border-radius:27px;margin-top:40px">`,
+      attachments: [
+        {
+          content: await getImageStream("https://t.lizi.moe/mp"),
+          cid: "https://t.lizi.moe/mp",
+          contentType: "image/png", // 图片格式，可以根据实际情况修改
+        },
+      ],
     };
 
     // 在这里编写发送邮件的代码
@@ -34,6 +52,51 @@ const sendEmail = () => {
       }
     });
   });
-};
+
+/******************  测试代码   **********************/
+// export const sendEmailForText = async () => {
+//   const canteensFood = randomMale(canteens);
+//   const takeAwaysFood = randomMale(TakeAways);
+
+//   async function getImageStream() {
+//     const response = await axios.get("https://t.lizi.moe/mp", {
+//       responseType: "arraybuffer", // 以二进制数组形式获取响应内容
+//     });
+//     const imageBuffer = Buffer.from(response.data, "binary"); // 将二进制数组转为 Buffer 对象
+//     return new Readable({
+//       read() {
+//         this.push(imageBuffer);
+//         this.push(null);
+//       },
+//     });
+//   }
+
+//   const mailOptions = {
+//     from: "347552878@qq.com",
+//     to: ["2063808831@qq.com"],
+//     subject: "嘉然今天吃什么？",
+//     // html: `<h1>今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~</h1><br /><p style="">比如香喷喷的${canteensFood}！</p>,如果非要点外卖的话,那就${takeAwaysFood}吧！`,
+//     html: `<div style="background:linear-gradient(180deg,#730040 0,#301cbe 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-fill-color:transparent;font-family:'Smiley Sans';font-style:normal;font-weight:700;font-size:24px;line-height:43px">今天我们就去打倒魔王，享用一番来之不易的魔法美食吧~</div><div style="box-sizing:border-box;"><div style=box-sizing:border-box;display:grid;grid-template-rows:repeat(3,auto);margin-top:20px;justify-items:center;justify-content:center;align-items:center><div>比如香喷喷的${canteensFood}！</div><div>如果非要点外卖的话,那就${takeAwaysFood}吧！</div></div></div><img src="https://t.lizi.moe/mp" alt=ss style="max-width:100%;height:60%;width:60%;overflow-clip-margin:content-box;overflow:clip;border-radius:27px;margin-top:40px">`,
+//     attachments: [
+//       {
+//         content: await getImageStream(),
+//         cid: "https://t.lizi.moe/mp",
+//         contentType: "image/png", // 图片格式，可以根据实际情况修改
+//       },
+//     ],
+//   };
+
+//   // 在这里编写发送邮件的代码
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.log(error);
+//       return error;
+//     } else {
+//       console.log("Email sent: " + info.response);
+//       return info.response;
+//     }
+//   });
+// };
+/*************************************************************** */
 
 export default sendEmail;

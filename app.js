@@ -8,5 +8,5 @@ app.get("/", (req, res) => {
   console.log("has been visited");
 });
 
-sendEmail();
+sendEmail().start();
 export default app;
