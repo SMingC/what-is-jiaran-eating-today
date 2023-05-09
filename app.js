@@ -7,5 +7,5 @@ app.get("/", (req, res) => {
   res.send("别访问了,啥也没有~");
 });
 
-sendEmail().start();
+sendEmail();
 export default app;
