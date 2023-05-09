@@ -2,7 +2,7 @@
  * @Author       : Seaming
  * @Date         : 2023-05-08
  * @LastEditors  : Seaming
- * @LastEditTime : 2023-05-08
+ * @LastEditTime : 2023-05-09
  * @FilePath     : /嘉然今天吃什么/src/utils/sendEmail.js
  * @Description  : async way to  get image and send it to the current emails
  *
@@ -14,7 +14,10 @@ import { createTransport } from "nodemailer";
 import { canteens, TakeAways } from "../data/food.js";
 import { getImageStream } from "./asyncImage.js";
 import randomMale from "./randomMale.js";
+import rule from "./timeScale.js";
 
+/* 此代码使用 `nodemailer` 库中的 `createTransport` 方法创建一个传输器对象。 transporter
+对象用于使用指定的电子邮件服务和身份验证凭据发送电子邮件。在本例中，电子邮件服务为QQ，身份验证凭证包括发件人帐户的电子邮件地址和密码。 */
 const transporter = createTransport({
   service: "qq",
   auth: {
@@ -23,8 +26,11 @@ const transporter = createTransport({
   },
 });
 
+/**
+ * 该函数发送一封电子邮件，其中包含从两个数组中随机选择的食物和一张附加图像。
+ */
 const sendEmail = () =>
-  schedule("20 11,17 * * *", async () => {
+  schedule(rule, async () => {
     console.log("邮件发送中...");
     const canteensFood = randomMale(canteens);
     const takeAwaysFood = randomMale(TakeAways);

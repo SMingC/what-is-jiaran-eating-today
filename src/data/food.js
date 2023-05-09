@@ -9,7 +9,7 @@ const TakeAways = [
   { element: "煲仔饭", weight: 3 },
   { element: "铁板炒", weight: 3 },
   { element: "伯乐🐔", weight: 4 },
-  { element: "黄焖鸡", weight: 1 },
+  { element: "黄焖鸡", weight: 2 },
 ];
 
 export { canteens, TakeAways };
